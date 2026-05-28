@@ -1,0 +1,59 @@
+{
+  "as_of": "2026-05-26",
+  "source": "example-eod",
+  "indices": {
+    "kospi": { "value": 8047.51, "change": 201.3, "change_pct": 2.55 },
+    "kospi200": { "value": 1226.03, "change": 0.81, "change_pct": 0.07 },
+    "vkospi": { "value": 18.72, "change": -0.84 },
+    "basis": { "value": 0.42 },
+    "usdkrw": { "value": 1358.4, "change": -4.6 }
+  },
+  "investors": [
+    {
+      "id": "foreign",
+      "name": "외국인",
+      "spot_net_bil": 842.5,
+      "futures_net_contracts": 6384,
+      "futures_cum_5d": 18420,
+      "call_net_contracts": 28400,
+      "put_net_contracts": -12800,
+      "option_premium_bil": 52.1
+    },
+    {
+      "id": "institution",
+      "name": "기관",
+      "spot_net_bil": -214.2,
+      "futures_net_contracts": -1180,
+      "futures_cum_5d": -4680,
+      "call_net_contracts": -4200,
+      "put_net_contracts": 6200,
+      "option_premium_bil": -11.4
+    },
+    {
+      "id": "individual",
+      "name": "개인",
+      "spot_net_bil": -612.7,
+      "futures_net_contracts": -5204,
+      "futures_cum_5d": -13740,
+      "call_net_contracts": -24200,
+      "put_net_contracts": 7600,
+      "option_premium_bil": -38.8
+    }
+  ],
+  "options": [
+    { "strike": 1200, "call_oi": 16600, "put_oi": 51400, "call_delta": 1260, "put_delta": 3920, "call_volume": 6230, "put_volume": 11880 },
+    { "strike": 1210, "call_oi": 26400, "put_oi": 38200, "call_delta": 2380, "put_delta": 1880, "call_volume": 8450, "put_volume": 7420 },
+    { "strike": 1220, "call_oi": 42700, "put_oi": 21800, "call_delta": 4820, "put_delta": -240, "call_volume": 12840, "put_volume": 4620 },
+    { "strike": 1230, "call_oi": 60200, "put_oi": 12100, "call_delta": 6420, "put_delta": -1140, "call_volume": 15680, "put_volume": 2810 },
+    { "strike": 1240, "call_oi": 68400, "put_oi": 7600, "call_delta": 8120, "put_delta": -620, "call_volume": 16920, "put_volume": 1680 }
+  ],
+  "leaders": [
+    { "name": "SK하이닉스", "sector": "반도체", "change_pct": 4.82 },
+    { "name": "한화에어로스페이스", "sector": "방산", "change_pct": 8.42 }
+  ],
+  "history": [
+    { "date": "05-22", "foreign_futures": -820, "institution_futures": 1260, "individual_futures": -440, "score": 49 },
+    { "date": "05-23", "foreign_futures": 7140, "institution_futures": -1880, "individual_futures": -5260, "score": 73 },
+    { "date": "05-26", "foreign_futures": 6384, "institution_futures": -1180, "individual_futures": -5204, "score": 75 }
+  ]
+}

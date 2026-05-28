@@ -1,0 +1,252 @@
+{
+  "as_of": "2026-05-26",
+  "source": "free-csv",
+  "mode": "eod",
+  "indices": {
+    "kospi": {
+      "value": 8047.51,
+      "change": 201.3,
+      "change_pct": 2.55
+    },
+    "kospi200": {
+      "value": 1226.03,
+      "change": 0.81,
+      "change_pct": 0.07
+    },
+    "vkospi": {
+      "value": 18.72,
+      "change": -0.84
+    },
+    "basis": {
+      "value": 0.42
+    },
+    "usdkrw": {
+      "value": 1358.4,
+      "change": -4.6
+    }
+  },
+  "investors": [
+    {
+      "id": "foreign",
+      "name": "외국인",
+      "spot_net_bil": 842.5,
+      "futures_net_contracts": 6384.0,
+      "futures_cum_5d": 18420.0,
+      "call_net_contracts": 28400.0,
+      "put_net_contracts": -12800.0,
+      "option_premium_bil": 52.1
+    },
+    {
+      "id": "institution",
+      "name": "기관",
+      "spot_net_bil": -214.2,
+      "futures_net_contracts": -1180.0,
+      "futures_cum_5d": -4680.0,
+      "call_net_contracts": -4200.0,
+      "put_net_contracts": 6200.0,
+      "option_premium_bil": -11.4
+    },
+    {
+      "id": "individual",
+      "name": "개인",
+      "spot_net_bil": -612.7,
+      "futures_net_contracts": -5204.0,
+      "futures_cum_5d": -13740.0,
+      "call_net_contracts": -24200.0,
+      "put_net_contracts": 7600.0,
+      "option_premium_bil": -38.8
+    }
+  ],
+  "options": [
+    {
+      "strike": 1185.0,
+      "call_oi": 8200.0,
+      "put_oi": 35100.0,
+      "call_delta": 410.0,
+      "put_delta": 1840.0,
+      "call_volume": 3210.0,
+      "put_volume": 8420.0
+    },
+    {
+      "strike": 1190.0,
+      "call_oi": 10400.0,
+      "put_oi": 38900.0,
+      "call_delta": 620.0,
+      "put_delta": 2110.0,
+      "call_volume": 4180.0,
+      "put_volume": 9160.0
+    },
+    {
+      "strike": 1195.0,
+      "call_oi": 12800.0,
+      "put_oi": 42300.0,
+      "call_delta": 780.0,
+      "put_delta": 2660.0,
+      "call_volume": 4620.0,
+      "put_volume": 10340.0
+    },
+    {
+      "strike": 1200.0,
+      "call_oi": 16600.0,
+      "put_oi": 51400.0,
+      "call_delta": 1260.0,
+      "put_delta": 3920.0,
+      "call_volume": 6230.0,
+      "put_volume": 11880.0
+    },
+    {
+      "strike": 1205.0,
+      "call_oi": 21400.0,
+      "put_oi": 46300.0,
+      "call_delta": 1880.0,
+      "put_delta": 3010.0,
+      "call_volume": 7280.0,
+      "put_volume": 9710.0
+    },
+    {
+      "strike": 1210.0,
+      "call_oi": 26400.0,
+      "put_oi": 38200.0,
+      "call_delta": 2380.0,
+      "put_delta": 1880.0,
+      "call_volume": 8450.0,
+      "put_volume": 7420.0
+    },
+    {
+      "strike": 1215.0,
+      "call_oi": 33800.0,
+      "put_oi": 27400.0,
+      "call_delta": 3420.0,
+      "put_delta": 620.0,
+      "call_volume": 10320.0,
+      "put_volume": 5840.0
+    },
+    {
+      "strike": 1220.0,
+      "call_oi": 42700.0,
+      "put_oi": 21800.0,
+      "call_delta": 4820.0,
+      "put_delta": -240.0,
+      "call_volume": 12840.0,
+      "put_volume": 4620.0
+    },
+    {
+      "strike": 1225.0,
+      "call_oi": 51600.0,
+      "put_oi": 16600.0,
+      "call_delta": 5660.0,
+      "put_delta": -820.0,
+      "call_volume": 14320.0,
+      "put_volume": 3620.0
+    },
+    {
+      "strike": 1230.0,
+      "call_oi": 60200.0,
+      "put_oi": 12100.0,
+      "call_delta": 6420.0,
+      "put_delta": -1140.0,
+      "call_volume": 15680.0,
+      "put_volume": 2810.0
+    },
+    {
+      "strike": 1235.0,
+      "call_oi": 48800.0,
+      "put_oi": 9300.0,
+      "call_delta": 2840.0,
+      "put_delta": -980.0,
+      "call_volume": 11740.0,
+      "put_volume": 2140.0
+    },
+    {
+      "strike": 1240.0,
+      "call_oi": 68400.0,
+      "put_oi": 7600.0,
+      "call_delta": 8120.0,
+      "put_delta": -620.0,
+      "call_volume": 16920.0,
+      "put_volume": 1680.0
+    },
+    {
+      "strike": 1245.0,
+      "call_oi": 33200.0,
+      "put_oi": 5200.0,
+      "call_delta": 1480.0,
+      "put_delta": -420.0,
+      "call_volume": 8240.0,
+      "put_volume": 1040.0
+    },
+    {
+      "strike": 1250.0,
+      "call_oi": 24600.0,
+      "put_oi": 4100.0,
+      "call_delta": 920.0,
+      "put_delta": -260.0,
+      "call_volume": 6420.0,
+      "put_volume": 820.0
+    }
+  ],
+  "leaders": [
+    {
+      "name": "SK하이닉스",
+      "sector": "반도체",
+      "change_pct": 4.82
+    },
+    {
+      "name": "삼성전자",
+      "sector": "반도체",
+      "change_pct": 3.24
+    },
+    {
+      "name": "한화에어로스페이스",
+      "sector": "방산",
+      "change_pct": 8.42
+    },
+    {
+      "name": "현대로템",
+      "sector": "방산",
+      "change_pct": 6.18
+    },
+    {
+      "name": "두산에너빌리티",
+      "sector": "원전",
+      "change_pct": 5.34
+    }
+  ],
+  "history": [
+    {
+      "date": "05-20",
+      "foreign_futures": 4820.0,
+      "institution_futures": -940.0,
+      "individual_futures": -3880.0,
+      "score": 68.0
+    },
+    {
+      "date": "05-21",
+      "foreign_futures": 3120.0,
+      "institution_futures": 460.0,
+      "individual_futures": -3580.0,
+      "score": 65.0
+    },
+    {
+      "date": "05-22",
+      "foreign_futures": -820.0,
+      "institution_futures": 1260.0,
+      "individual_futures": -440.0,
+      "score": 49.0
+    },
+    {
+      "date": "05-23",
+      "foreign_futures": 7140.0,
+      "institution_futures": -1880.0,
+      "individual_futures": -5260.0,
+      "score": 73.0
+    },
+    {
+      "date": "05-26",
+      "foreign_futures": 6384.0,
+      "institution_futures": -1180.0,
+      "individual_futures": -5204.0,
+      "score": 75.0
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "note": "무료 자동화용 소스 정의 초안입니다. KRX 화면 자동 다운로드를 붙일 때 이 파일의 항목을 하나씩 구현하면 됩니다.",
+  "sources": [
+    {
+      "id": "krx-index-all",
+      "target_csv": "db/free_inputs/indices.csv",
+      "site": "KRX Data Marketplace",
+      "menu": "통계 > 기본 통계 > 지수 > 주가지수 > 전체지수 시세",
+      "manual_step": "KOSPI와 KOSPI200 행을 내려받아 indices.csv에 붙여넣기"
+    },
+    {
+      "id": "krx-stock-investor",
+      "target_csv": "db/free_inputs/investors.csv",
+      "site": "KRX Data Marketplace",
+      "menu": "통계 > 기본 통계 > 주식 > 거래실적 > 투자자별 거래실적",
+      "manual_step": "KOSPI 외국인/기관/개인 순매수 거래대금을 spot_net_eok에 입력"
+    },
+    {
+      "id": "krx-derivatives-investor",
+      "target_csv": "db/free_inputs/investors.csv",
+      "site": "KRX Data Marketplace",
+      "menu": "통계 > 기본 통계 > 파생상품 > 거래실적 > 투자자별 거래실적",
+      "manual_step": "KOSPI200 선물 순매수수량을 futures_net_contracts에 입력"
+    },
+    {
+      "id": "krx-option-strikes",
+      "target_csv": "db/free_inputs/options.csv",
+      "site": "KRX Data Marketplace",
+      "menu": "통계 > 기본 통계 > 파생상품 > 세부안내 > 행사가격/만기별 가격표(옵션)",
+      "manual_step": "최근월물 행사가별 콜/풋 OI와 거래량을 options.csv에 입력"
+    }
+  ]
+}

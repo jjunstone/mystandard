@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>K-QUANT TERMINAL v2 | DAILY FLOW</title>
+<style>
+:root {
+  --bg:#05070b;
+  --panel:#0b1119;
+  --panel-2:#0f1723;
+  --line:#1e2d3d;
+  --line-hot:#37607a;
+  --text:#dbe7ea;
+  --muted:#7c9098;
+  --dim:#46575f;
+  --cyan:#2dd4bf;
+  --green:#48d17c;
+  --red:#ff5570;
+  --amber:#f7b955;
+  --blue:#56a3ff;
+  --ink:#091018;
+}
+* { box-sizing:border-box; }
+html, body { margin:0; min-height:100%; background:var(--bg); color:var(--text); font-family:Arial, "Malgun Gothic", sans-serif; }
+body {
+  background:
+    linear-gradient(180deg, rgba(45,212,191,.05), transparent 250px),
+    radial-gradient(circle at 80% 0%, rgba(247,185,85,.08), transparent 360px),
+    var(--bg);
+}
+button { font:inherit; }
+.wrap { width:min(1760px, calc(100vw - 28px)); margin:0 auto; padding:14px 0 20px; }
+.topbar { display:flex; align-items:center; gap:14px; min-height:42px; border:1px solid var(--line); background:rgba(8,13,20,.92); padding:8px 12px; }
+.brand { display:flex; align-items:baseline; gap:10px; font-weight:900; letter-spacing:.08em; }
+.brand small { color:var(--cyan); font-size:11px; letter-spacing:.18em; }
+.status { margin-left:auto; display:flex; align-items:center; gap:10px; color:var(--muted); font-family:Consolas, monospace; font-size:12px; }
+.dot { width:8px; height:8px; border-radius:50%; background:var(--amber); box-shadow:0 0 14px currentColor; }
+.dot.ok { background:var(--green); }
+.dot.warn { background:var(--amber); }
+.mono { font-family:Consolas, "Share Tech Mono", monospace; }
+.hero { display:grid; grid-template-columns:360px 1fr; gap:10px; margin-top:10px; }
+.verdict {
+  border:1px solid var(--line-hot);
+  background:linear-gradient(145deg, rgba(45,212,191,.11), rgba(15,23,35,.96));
+  min-height:236px;
+  padding:18px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+.eyebrow { color:var(--muted); font-family:Consolas, monospace; font-size:11px; letter-spacing:.16em; }
+.regime-row { display:flex; align-items:center; justify-content:space-between; gap:14px; }
+.regime { font-size:70px; line-height:.9; font-weight:900; letter-spacing:.02em; }
+.regime.long, .bull { color:var(--green); }
+.regime.short, .bear { color:var(--red); }
+.regime.hold, .neutral { color:var(--amber); }
+.score-ring {
+  width:92px;
+  aspect-ratio:1;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:conic-gradient(var(--green) calc(var(--score) * 1%), rgba(255,255,255,.08) 0);
+  position:relative;
+  flex:0 0 auto;
+}
+.score-ring::before { content:""; position:absolute; inset:8px; border-radius:50%; background:var(--panel); border:1px solid var(--line); }
+.score-ring span { position:relative; font-size:30px; font-weight:900; }
+.headline { font-size:18px; line-height:1.35; font-weight:700; }
+.subline { color:var(--muted); line-height:1.55; font-size:13px; }
+.metrics { display:grid; grid-template-columns:repeat(6, 1fr); gap:8px; }
+.metric, .panel {
+  border:1px solid var(--line);
+  background:rgba(11,17,25,.94);
+}
+.metric { min-height:112px; padding:12px; display:flex; flex-direction:column; justify-content:space-between; }
+.metric-label { color:var(--muted); font-family:Consolas, monospace; font-size:11px; letter-spacing:.08em; }
+.metric-value { font-size:30px; line-height:1.08; font-weight:900; white-space:nowrap; }
+.metric-sub { color:var(--muted); font-size:12px; }
+.main-grid { display:grid; grid-template-columns:1.05fr 1.45fr .95fr; gap:10px; margin-top:10px; align-items:start; }
+.lower-grid { display:grid; grid-template-columns:1.2fr .8fr 1fr; gap:10px; margin-top:10px; align-items:start; }
+.panel { min-height:280px; }
+.panel-head { display:flex; justify-content:space-between; align-items:center; padding:10px 12px; border-bottom:1px solid var(--line); background:rgba(255,255,255,.02); }
+.panel-title { font-weight:800; letter-spacing:.04em; }
+.tag { border:1px solid currentColor; padding:2px 7px; font-family:Consolas, monospace; font-size:11px; }
+.panel-body { padding:12px; }
+.investor-list { display:grid; gap:8px; }
+.investor-card { border:1px solid var(--line); background:var(--panel-2); padding:12px; }
+.investor-top { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px; }
+.investor-name { font-size:20px; font-weight:900; }
+.score-pill { min-width:60px; text-align:center; border:1px solid currentColor; padding:3px 8px; font-family:Consolas, monospace; font-weight:700; }
+.flow-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-top:10px; }
+.flow-cell { border:1px solid rgba(255,255,255,.06); background:rgba(0,0,0,.16); padding:8px; }
+.flow-k { color:var(--muted); font-family:Consolas, monospace; font-size:10px; margin-bottom:4px; }
+.flow-v { font-size:17px; font-weight:900; white-space:nowrap; }
+.summary { color:var(--muted); font-size:12px; line-height:1.45; }
+.oi-table { display:grid; gap:5px; }
+.oi-row { display:grid; grid-template-columns:58px 1fr 1fr 72px; align-items:center; gap:8px; min-height:24px; }
+.strike { color:var(--text); text-align:right; font-family:Consolas, monospace; font-weight:700; }
+.bar-wrap { height:18px; background:rgba(0,0,0,.28); border:1px solid rgba(255,255,255,.06); position:relative; overflow:hidden; }
+.bar { position:absolute; inset:0 auto 0 0; min-width:2px; }
+.bar.call { background:linear-gradient(90deg, rgba(255,85,112,.15), rgba(255,85,112,.88)); right:0; left:auto; }
+.bar.put { background:linear-gradient(90deg, rgba(86,163,255,.82), rgba(86,163,255,.15)); }
+.oi-num { color:var(--muted); font-family:Consolas, monospace; font-size:11px; }
+.oi-row.hot .strike { color:var(--amber); }
+.oi-row.max .strike { color:var(--cyan); }
+.legend { display:flex; gap:12px; color:var(--muted); font-size:12px; margin-bottom:10px; }
+.legend b { color:var(--text); }
+.plan-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.level { border:1px solid var(--line); background:rgba(255,255,255,.025); padding:10px; }
+.level-k { color:var(--muted); font-family:Consolas, monospace; font-size:10px; letter-spacing:.08em; }
+.level-v { margin-top:4px; font-size:22px; font-weight:900; white-space:nowrap; }
+.note { margin-top:10px; color:var(--muted); line-height:1.55; }
+.obs { display:grid; gap:8px; }
+.obs-item { display:grid; grid-template-columns:22px 1fr; gap:8px; color:var(--muted); line-height:1.45; }
+.obs-item span:first-child { color:var(--cyan); font-family:Consolas, monospace; }
+.history { display:grid; gap:8px; }
+.history-row { display:grid; grid-template-columns:54px 1fr 52px; align-items:center; gap:8px; }
+.history-bar { height:12px; border:1px solid var(--line); background:rgba(0,0,0,.22); position:relative; overflow:hidden; }
+.history-fill { position:absolute; inset:0 auto 0 0; background:linear-gradient(90deg, var(--cyan), var(--green)); }
+.leader-list { display:grid; gap:8px; }
+.leader { display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,.06); padding-bottom:7px; }
+.leader strong { display:block; }
+.leader small { color:var(--muted); }
+.matrix { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.matrix-card { border:1px solid var(--line); background:rgba(255,255,255,.025); padding:10px; min-height:88px; }
+.matrix-card strong { display:block; margin-bottom:6px; }
+.matrix-card p { margin:0; color:var(--muted); line-height:1.45; }
+.refresh { border:1px solid var(--line-hot); background:transparent; color:var(--text); padding:6px 10px; cursor:pointer; }
+.refresh:hover { border-color:var(--cyan); color:var(--cyan); }
+@media (max-width:1200px) {
+  .hero, .main-grid, .lower-grid { grid-template-columns:1fr; }
+  .metrics { grid-template-columns:repeat(2, 1fr); }
+}
+@media (max-width:640px) {
+  .wrap { width:calc(100vw - 16px); }
+  .metrics, .flow-grid, .plan-grid, .matrix { grid-template-columns:1fr; }
+  .regime { font-size:48px; }
+  .topbar { align-items:flex-start; flex-direction:column; }
+  .status { margin-left:0; flex-wrap:wrap; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="topbar">
+    <div class="brand">K-QUANT v2 <small>DAILY FLOW TERMINAL</small></div>
+    <div class="status">
+      <span class="dot warn" id="statusDot"></span>
+      <span id="apiStatus">데이터 로드 중</span>
+      <button class="refresh" id="importBtn">IMPORT CSV</button>
+      <button class="refresh" id="refreshBtn">REFRESH</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <article class="verdict">
+      <div class="eyebrow">TODAY'S POSITION BIAS</div>
+      <div class="regime-row">
+        <div class="regime long" id="regime">LONG</div>
+        <div class="score-ring" id="scoreRing" style="--score:0"><span id="score">--</span></div>
+      </div>
+      <div>
+        <div class="headline" id="headline">수급 분석 대기</div>
+        <div class="subline" id="subline">외국인 선물, 투자자별 현물, 옵션 OI를 합산해 일별 방향성을 계산합니다.</div>
+      </div>
+    </article>
+
+    <div class="metrics">
+      <div class="metric"><div class="metric-label">KOSPI</div><div class="metric-value" id="kospi">--</div><div class="metric-sub" id="kospiSub">--</div></div>
+      <div class="metric"><div class="metric-label">KOSPI200</div><div class="metric-value" id="kospi200">--</div><div class="metric-sub" id="kospi200Sub">--</div></div>
+      <div class="metric"><div class="metric-label">외국인 선물</div><div class="metric-value" id="foreignFutures">--</div><div class="metric-sub" id="foreignSub">--</div></div>
+      <div class="metric"><div class="metric-label">OI P/C</div><div class="metric-value" id="pcrOi">--</div><div class="metric-sub" id="pcrSub">--</div></div>
+      <div class="metric"><div class="metric-label">CALL WALL</div><div class="metric-value" id="callWall">--</div><div class="metric-sub" id="callWallSub">--</div></div>
+      <div class="metric"><div class="metric-label">PUT WALL</div><div class="metric-value" id="putWall">--</div><div class="metric-sub" id="putWallSub">--</div></div>
+    </div>
+  </section>
+
+  <section class="main-grid">
+    <article class="panel">
+      <div class="panel-head">
+        <div class="panel-title">투자자별 수급 스코어</div>
+        <div class="tag" id="asOf">--</div>
+      </div>
+      <div class="panel-body">
+        <div class="investor-list" id="investorList"></div>
+      </div>
+    </article>
+
+    <article class="panel">
+      <div class="panel-head">
+        <div class="panel-title">행사가별 미결제약정 벽</div>
+        <div class="tag" id="oiState">--</div>
+      </div>
+      <div class="panel-body">
+        <div class="legend"><span><b style="color:var(--red)">CALL OI</b> 저항</span><span><b style="color:var(--blue)">PUT OI</b> 지지</span><span><b style="color:var(--cyan)">MAX PAIN</b></span></div>
+        <div class="oi-table" id="oiTable"></div>
+      </div>
+    </article>
+
+    <article class="panel">
+      <div class="panel-head">
+        <div class="panel-title">수급 반영 매매 구간</div>
+        <div class="tag" id="planBias">--</div>
+      </div>
+      <div class="panel-body">
+        <div class="plan-grid">
+          <div class="level"><div class="level-k">PRIMARY</div><div class="level-v" id="levelPrimary">--</div></div>
+          <div class="level"><div class="level-k">SUPPORT</div><div class="level-v" id="levelSupport">--</div></div>
+          <div class="level"><div class="level-k">TARGET 1</div><div class="level-v bull" id="levelTarget1">--</div></div>
+          <div class="level"><div class="level-k">TARGET 2</div><div class="level-v bull" id="levelTarget2">--</div></div>
+          <div class="level"><div class="level-k">STOP</div><div class="level-v bear" id="levelStop">--</div></div>
+          <div class="level"><div class="level-k">MAX PAIN</div><div class="level-v neutral" id="levelMaxPain">--</div></div>
+        </div>
+        <div class="note" id="planNote">--</div>
+      </div>
+    </article>
+  </section>
+
+  <section class="lower-grid">
+    <article class="panel">
+      <div class="panel-head"><div class="panel-title">판정 근거</div><div class="tag" id="confidence">--</div></div>
+      <div class="panel-body"><div class="obs" id="observations"></div></div>
+    </article>
+    <article class="panel">
+      <div class="panel-head"><div class="panel-title">최근 수급 점수</div><div class="tag">5D</div></div>
+      <div class="panel-body"><div class="history" id="history"></div></div>
+    </article>
+    <article class="panel">
+      <div class="panel-head"><div class="panel-title">주도 섹터와 체크 매트릭스</div><div class="tag" id="sourceTag">--</div></div>
+      <div class="panel-body">
+        <div class="leader-list" id="leaders"></div>
+        <div class="matrix" id="matrix" style="margin-top:12px"></div>
+      </div>
+    </article>
+  </section>
+</div>
+
+<script>
+const FALLBACK_PAYLOAD = {
+  as_of: "2026-05-26",
+  source: "sample-eod",
+  mode: "sample",
+  indices: {
+    kospi: { value: 8047.51, change: 201.3, change_pct: 2.55 },
+    kospi200: { value: 1226.03, change: 0.81, change_pct: 0.07 },
+    vkospi: { value: 18.72, change: -0.84 },
+    basis: { value: 0.42 },
+    usdkrw: { value: 1358.4, change: -4.6 }
+  },
+  investors: [
+    { id:"foreign", name:"외국인", spot_net_bil:842.5, futures_net_contracts:6384, futures_cum_5d:18420, call_net_contracts:28400, put_net_contracts:-12800, option_premium_bil:52.1, score:70, posture:"강한 상방", tone:"bull", option_tilt:41200, summary:"현물 순매수 / 선물 순매수 / 콜 우위" },
+    { id:"institution", name:"기관", spot_net_bil:-214.2, futures_net_contracts:-1180, futures_cum_5d:-4680, call_net_contracts:-4200, put_net_contracts:6200, option_premium_bil:-11.4, score:-17, posture:"하방 우위", tone:"bear", option_tilt:-10400, summary:"현물 순매도 / 선물 순매도 / 풋 우위" },
+    { id:"individual", name:"개인", spot_net_bil:-612.7, futures_net_contracts:-5204, futures_cum_5d:-13740, call_net_contracts:-24200, put_net_contracts:7600, option_premium_bil:-38.8, score:-58, posture:"강한 하방", tone:"bear", option_tilt:-31800, summary:"현물 순매도 / 선물 순매도 / 풋 우위" }
+  ],
+  option_summary: {
+    total_call_oi:459100, total_put_oi:356300, total_call_volume:130450, total_put_volume:79500,
+    total_oi_delta:52570, pcr_oi:0.78, pcr_volume:0.61,
+    call_wall:{ strike:1240, oi:68400 }, put_wall:{ strike:1200, oi:51400 },
+    max_pain:1215, distance_to_call_wall:13.97, distance_to_put_wall:26.03
+  },
+  oi_state: { direction:"long_build", label:"신규 롱 유입", description:"가격 상승과 OI 증가가 겹쳐 새 상방 포지션 유입으로 봅니다." },
+  analysis: {
+    regime:"LONG", score:85, confidence:"HIGH", headline:"외국인 주도 상방 우위 · 신뢰도 HIGH",
+    observations:[
+      "외국인 수급 영향력이 가장 큽니다: 강한 상방 (+70pt).",
+      "OI 구조: 신규 롱 유입. 가격 상승과 OI 증가가 겹쳐 새 상방 포지션 유입으로 봅니다.",
+      "콜벽 1240 / 풋벽 1200 / Max Pain 1215 구간을 기준으로 봅니다.",
+      "PCR은 OI 0.78, 거래량 0.61입니다. Basis +0.42는 LONG 점수에 반영됐습니다."
+    ],
+    trade_plan:{ bias:"상방 추종", primary:1226.03, support:1215, target1:1238.5, target2:1245, stop:1197, note:"외국인 선물 수급이 유지되면 콜벽 전까지는 눌림 우위입니다." }
+  },
+  options: [
+    { strike:1185, call_oi:8200, put_oi:35100, call_delta:410, put_delta:1840, call_width:11.99, put_width:51.32 },
+    { strike:1190, call_oi:10400, put_oi:38900, call_delta:620, put_delta:2110, call_width:15.2, put_width:56.87 },
+    { strike:1195, call_oi:12800, put_oi:42300, call_delta:780, put_delta:2660, call_width:18.71, put_width:61.84 },
+    { strike:1200, call_oi:16600, put_oi:51400, call_delta:1260, put_delta:3920, call_width:24.27, put_width:75.15, is_put_wall:true },
+    { strike:1205, call_oi:21400, put_oi:46300, call_delta:1880, put_delta:3010, call_width:31.29, put_width:67.69 },
+    { strike:1210, call_oi:26400, put_oi:38200, call_delta:2380, put_delta:1880, call_width:38.6, put_width:55.85 },
+    { strike:1215, call_oi:33800, put_oi:27400, call_delta:3420, put_delta:620, call_width:49.42, put_width:40.06, is_max_pain:true },
+    { strike:1220, call_oi:42700, put_oi:21800, call_delta:4820, put_delta:-240, call_width:62.43, put_width:31.87 },
+    { strike:1225, call_oi:51600, put_oi:16600, call_delta:5660, put_delta:-820, call_width:75.44, put_width:24.27 },
+    { strike:1230, call_oi:60200, put_oi:12100, call_delta:6420, put_delta:-1140, call_width:88.01, put_width:17.69 },
+    { strike:1235, call_oi:48800, put_oi:9300, call_delta:2840, put_delta:-980, call_width:71.35, put_width:13.6 },
+    { strike:1240, call_oi:68400, put_oi:7600, call_delta:8120, put_delta:-620, call_width:100, put_width:11.11, is_call_wall:true },
+    { strike:1245, call_oi:33200, put_oi:5200, call_delta:1480, put_delta:-420, call_width:48.54, put_width:7.6 },
+    { strike:1250, call_oi:24600, put_oi:4100, call_delta:920, put_delta:-260, call_width:35.96, put_width:5.99 }
+  ],
+  leaders: [
+    { name:"SK하이닉스", sector:"반도체", change_pct:4.82 },
+    { name:"삼성전자", sector:"반도체", change_pct:3.24 },
+    { name:"한화에어로스페이스", sector:"방산", change_pct:8.42 },
+    { name:"현대로템", sector:"방산", change_pct:6.18 },
+    { name:"두산에너빌리티", sector:"원전", change_pct:5.34 }
+  ],
+  history: [
+    { date:"05-20", foreign_futures:4820, institution_futures:-940, individual_futures:-3880, score:68 },
+    { date:"05-21", foreign_futures:3120, institution_futures:460, individual_futures:-3580, score:65 },
+    { date:"05-22", foreign_futures:-820, institution_futures:1260, individual_futures:-440, score:49 },
+    { date:"05-23", foreign_futures:7140, institution_futures:-1880, individual_futures:-5260, score:73 },
+    { date:"05-26", foreign_futures:6384, institution_futures:-1180, individual_futures:-5204, score:75 }
+  ]
+};
+
+const nf0 = new Intl.NumberFormat("ko-KR", { maximumFractionDigits: 0 });
+const nf1 = new Intl.NumberFormat("ko-KR", { maximumFractionDigits: 1 });
+const nf2 = new Intl.NumberFormat("ko-KR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+function num(v, digits = 0) {
+  if (v === null || v === undefined || Number.isNaN(Number(v))) return "--";
+  return digits === 2 ? nf2.format(Number(v)) : digits === 1 ? nf1.format(Number(v)) : nf0.format(Number(v));
+}
+
+function signed(v, suffix = "", digits = 0) {
+  const n = Number(v || 0);
+  const body = digits === 2 ? nf2.format(Math.abs(n)) : digits === 1 ? nf1.format(Math.abs(n)) : nf0.format(Math.abs(n));
+  return `${n >= 0 ? "+" : "-"}${body}${suffix}`;
+}
+
+function tone(value) {
+  return Number(value || 0) > 0 ? "bull" : Number(value || 0) < 0 ? "bear" : "neutral";
+}
+
+async function loadPayload() {
+  const endpoint = location.protocol.startsWith("http") ? "/api/dashboard" : "http://127.0.0.1:8000/api/dashboard";
+  try {
+    const response = await fetch(endpoint, { cache: "no-store" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const payload = await response.json();
+    setStatus(true, `${payload.source} · ${payload.as_of}`);
+    return payload;
+  } catch (error) {
+    setStatus(false, `샘플 데이터 · API 대기 (${error.message})`);
+    return FALLBACK_PAYLOAD;
+  }
+}
+
+async function importCsvAndReload() {
+  const endpoint = location.protocol.startsWith("http") ? "/api/import-free-data" : "http://127.0.0.1:8000/api/import-free-data";
+  try {
+    setStatus(false, "CSV 변환 중");
+    const response = await fetch(endpoint, { method: "POST", cache: "no-store" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const payload = await response.json();
+    if (!payload.ok) throw new Error(payload.error || "import failed");
+    setStatus(true, `${payload.source} · ${payload.as_of}`);
+    render(payload.dashboard);
+  } catch (error) {
+    setStatus(false, `CSV 변환 실패 (${error.message})`);
+  }
+}
+
+function setStatus(ok, text) {
+  document.getElementById("statusDot").className = `dot ${ok ? "ok" : "warn"}`;
+  document.getElementById("apiStatus").textContent = text;
+}
+
+function render(payload) {
+  const analysis = payload.analysis;
+  const regimeClass = analysis.regime.toLowerCase();
+  const score = analysis.score;
+  const option = payload.option_summary;
+  const idx = payload.indices;
+  const foreign = payload.investors.find((row) => row.id === "foreign") || payload.investors[0] || {};
+  document.body.dataset.regime = analysis.regime;
+
+  const regime = document.getElementById("regime");
+  regime.textContent = analysis.regime;
+  regime.className = `regime ${regimeClass}`;
+  document.getElementById("score").textContent = score;
+  const scoreRing = document.getElementById("scoreRing");
+  scoreRing.style.setProperty("--score", score);
+  scoreRing.style.background = `conic-gradient(${analysis.regime === "SHORT" ? "var(--red)" : analysis.regime === "HOLD" ? "var(--amber)" : "var(--green)"} ${score}%, rgba(255,255,255,.08) 0)`;
+  document.getElementById("headline").textContent = analysis.headline;
+  document.getElementById("subline").textContent = analysis.observations[0] || "";
+
+  renderMetric("kospi", idx.kospi.value, idx.kospi.change, idx.kospi.change_pct);
+  renderMetric("kospi200", idx.kospi200.value, idx.kospi200.change, idx.kospi200.change_pct);
+  document.getElementById("foreignFutures").textContent = signed(foreign.futures_net_contracts);
+  document.getElementById("foreignFutures").className = `metric-value ${tone(foreign.futures_net_contracts)}`;
+  document.getElementById("foreignSub").textContent = `${foreign.posture} · 5D ${signed(foreign.futures_cum_5d, "계약")}`;
+  document.getElementById("pcrOi").textContent = nf2.format(option.pcr_oi);
+  document.getElementById("pcrSub").textContent = `VOL P/C ${nf2.format(option.pcr_volume)} · ${payload.oi_state.label}`;
+  document.getElementById("callWall").textContent = num(option.call_wall.strike, 0);
+  document.getElementById("callWallSub").textContent = `${num(option.call_wall.oi)}계약 · +${nf2.format(option.distance_to_call_wall)}pt`;
+  document.getElementById("putWall").textContent = num(option.put_wall.strike, 0);
+  document.getElementById("putWallSub").textContent = `${num(option.put_wall.oi)}계약 · -${nf2.format(option.distance_to_put_wall)}pt`;
+  document.getElementById("asOf").textContent = payload.as_of || "--";
+  document.getElementById("oiState").textContent = payload.oi_state.label;
+  document.getElementById("confidence").textContent = analysis.confidence;
+  document.getElementById("sourceTag").textContent = payload.mode || payload.source;
+
+  renderInvestors(payload.investors);
+  renderOptions(payload.options);
+  renderPlan(analysis.trade_plan, option);
+  renderObservations(analysis.observations);
+  renderHistory(payload.history);
+  renderLeaders(payload.leaders);
+  renderMatrix(payload);
+}
+
+function renderMetric(id, value, change, pct) {
+  const valueEl = document.getElementById(id);
+  const subEl = document.getElementById(`${id}Sub`);
+  valueEl.textContent = num(value, 2);
+  valueEl.className = `metric-value ${tone(change)}`;
+  subEl.textContent = `${signed(change, "pt", 2)} · ${signed(pct, "%", 2)}`;
+  subEl.className = `metric-sub ${tone(change)}`;
+}
+
+function renderInvestors(investors) {
+  document.getElementById("investorList").innerHTML = investors.map((row) => `
+    <div class="investor-card">
+      <div class="investor-top">
+        <div>
+          <div class="investor-name ${row.tone}">${row.name}</div>
+          <div class="summary">${row.summary}</div>
+        </div>
+        <div class="score-pill ${row.tone}">${signed(row.score, "pt")}</div>
+      </div>
+      <div class="flow-grid">
+        <div class="flow-cell"><div class="flow-k">현물</div><div class="flow-v ${tone(row.spot_net_bil)}">${signed(Number(row.spot_net_bil || 0) * 10, "억", 0)}</div></div>
+        <div class="flow-cell"><div class="flow-k">선물 당일</div><div class="flow-v ${tone(row.futures_net_contracts)}">${signed(row.futures_net_contracts, "계약")}</div></div>
+        <div class="flow-cell"><div class="flow-k">선물 5D</div><div class="flow-v ${tone(row.futures_cum_5d)}">${signed(row.futures_cum_5d, "계약")}</div></div>
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderOptions(options) {
+  document.getElementById("oiTable").innerHTML = options.map((row) => {
+    const classes = ["oi-row", row.is_call_wall || row.is_put_wall ? "hot" : "", row.is_max_pain ? "max" : ""].join(" ");
+    const flag = row.is_call_wall ? "CALL" : row.is_put_wall ? "PUT" : row.is_max_pain ? "PAIN" : "";
+    return `
+      <div class="${classes}">
+        <div class="strike">${num(row.strike)} ${flag}</div>
+        <div class="bar-wrap"><div class="bar call" style="width:${row.call_width}%"></div></div>
+        <div class="bar-wrap"><div class="bar put" style="width:${row.put_width}%"></div></div>
+        <div class="oi-num">${signed((row.call_delta || 0) + (row.put_delta || 0))}</div>
+      </div>
+    `;
+  }).join("");
+}
+
+function renderPlan(plan, option) {
+  document.getElementById("planBias").textContent = plan.bias;
+  document.getElementById("levelPrimary").textContent = num(plan.primary, 2);
+  document.getElementById("levelSupport").textContent = num(plan.support, 2);
+  document.getElementById("levelTarget1").textContent = num(plan.target1, 2);
+  document.getElementById("levelTarget2").textContent = num(plan.target2, 2);
+  document.getElementById("levelStop").textContent = num(plan.stop, 2);
+  document.getElementById("levelMaxPain").textContent = num(option.max_pain, 2);
+  document.getElementById("planNote").textContent = plan.note;
+}
+
+function renderObservations(items) {
+  document.getElementById("observations").innerHTML = items.map((text, index) => `
+    <div class="obs-item"><span>${String(index + 1).padStart(2, "0")}</span><div>${text}</div></div>
+  `).join("");
+}
+
+function renderHistory(history) {
+  document.getElementById("history").innerHTML = history.map((row) => `
+    <div class="history-row">
+      <div class="mono">${row.date}</div>
+      <div class="history-bar"><div class="history-fill" style="width:${row.score}%"></div></div>
+      <div class="mono ${tone(row.score - 50)}">${row.score}</div>
+    </div>
+  `).join("");
+}
+
+function renderLeaders(leaders) {
+  document.getElementById("leaders").innerHTML = leaders.slice(0, 5).map((row) => `
+    <div class="leader">
+      <div><strong>${row.name}</strong><small>${row.sector}</small></div>
+      <div class="${tone(row.change_pct)}">${signed(row.change_pct, "%", 2)}</div>
+    </div>
+  `).join("");
+}
+
+function renderMatrix(payload) {
+  const option = payload.option_summary;
+  const idx = payload.indices;
+  const foreign = payload.investors.find((row) => row.id === "foreign") || {};
+  const individual = payload.investors.find((row) => row.id === "individual") || {};
+  const cards = [
+    ["외국인 주도성", `${foreign.posture} · ${signed(foreign.futures_net_contracts, "계약")}`],
+    ["개인 반대 포지션", `${individual.posture} · ${signed(individual.futures_net_contracts, "계약")}`],
+    ["옵션 쏠림", `OI P/C ${nf2.format(option.pcr_oi)} · VOL P/C ${nf2.format(option.pcr_volume)}`],
+    ["베이시스", `${signed(idx.basis.value, "pt", 2)} · 선물 프리미엄 반영`]
+  ];
+  document.getElementById("matrix").innerHTML = cards.map(([title, text]) => `
+    <div class="matrix-card"><strong>${title}</strong><p>${text}</p></div>
+  `).join("");
+}
+
+async function boot() {
+  const payload = await loadPayload();
+  render(payload);
+}
+
+document.getElementById("refreshBtn").addEventListener("click", boot);
+document.getElementById("importBtn").addEventListener("click", importCsvAndReload);
+boot();
+</script>
+</body>
+</html>
